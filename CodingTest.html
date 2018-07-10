@@ -1,0 +1,164 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <style>
+	   p, table { 
+	    font-size: 14pt;
+	   }
+	</style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+// list of sities (array)
+
+	var places = [
+    {
+        'name': 'Nashville, TN',
+        'latitude': 36.17,
+        'longtitute': -86.78
+    },
+    {
+        'name': 'New York, NY',
+        'latitude': 40.71,
+        'longtitute': -74.00
+    },
+    {
+        'name': 'Atlanta, GA',
+        'latitude': 33.75,
+        'longtitute': -84.39
+    },
+    {
+        'name': 'Denver, CO',
+        'latitude': 39.74,
+        'longtitute': -104.98
+    },
+    {
+        'name': 'Seattle, WA',
+        'latitude': 47.61,
+        'longtitute': -122.33
+    },
+    {
+        'name': 'Los Angeles, CA',
+        'latitude': 34.05,
+        'longtitute': -118.24
+    },
+    {
+        'name': 'Memphis, TN',
+        'latitude': 35.15,
+        'longtitute': -90.05
+    }
+	];
+
+    // displaying the result on a page
+    document.write ('<table border="1" cellspacing="0">');
+    document.write ('<tr><th>Name</th><th>latitude</th><th>longtitute</th></tr>');
+    for (var i = 0; i <= places.length - 1; i++) {
+    document.write ('<tr><th>' + places[i].name + '</th><th>' + places[i].latitude + '</th><th>' + places[i].longtitute + '</th></tr>');
+	}
+    document.write ('</table>');
+	document.write ('<hr>');
+
+
+	//constructor 
+
+	function MapCreator(places) {
+	    this.places = places;
+	};
+
+	var Map = new MapCreator(places);
+
+
+	// this method return name of city with extream location
+
+	MapCreator.prototype.findTheMost = function(dest) {
+	   var i = 0;
+	   var extremeValue = this.places[i];
+	  	for (i = 0; i <= this.places.length - 1; i++) {
+	                
+	 
+	      switch(dest){
+	      	case 'norther': 
+	          if (this.places[i].longtitute > extremeValue.longtitute) 
+	               {extremeValue = this.places[i]}; 
+	          break;
+	            
+	        case 'eastern':
+	          if (this.places[i].latitude < extremeValue.latitude) 
+	               {extremeValue = this.places[i]}; 
+	          break;
+
+	        case 'southern':
+	          if (this.places[i].longtitute < extremeValue.longtitute) 
+	               {extremeValue = this.places[i]};
+	          break;
+	   
+	        case 'western':
+	          if (this.places[i].latitude > extremeValue.latitude) 
+	               {extremeValue = this.places[i]};
+	          break;
+	    }
+	  };
+	  return extremeValue.name;
+	};
+
+	// displaying the result on a page
+
+	document.write ('<p> North - ' + Map.findTheMost('norther') + '</p>');
+	document.write ('<p> East - ' + Map.findTheMost('eastern') + '</p>');
+	document.write ('<p> South - ' + Map.findTheMost('southern') + '</p>');
+	document.write ('<p> West - ' + Map.findTheMost('western') + '</p>');
+	document.write ('<hr>');
+
+
+	// this method get longitude and latitude and return the name of the city that is closest to that location
+
+	MapCreator.prototype.findNearby = function(latit, longit) {
+			var minDistance = Infinity;
+			var minDistancePlace;
+			for (var i = 0; i <= this.places.length - 1; i++) {
+				var y = this.places[i].latitude - latit;
+				var x = this.places[i].longtitute - longit;
+				var distance = (x**2 + y**2)**0.5;
+					distance = distance.toFixed(2);
+				if (distance <= minDistance) 
+					{
+						minDistance = distance;
+						minDistancePlace = this.places[i].name;
+					};
+			} 
+		return minDistancePlace;
+	};
+
+	// displaying the result on a page
+
+	document.write ('<p> Closest to that point - ' + Map.findNearby(40.33, -72.35) + '</p>');
+	document.write ('<p> Closest to that point - ' + Map.findNearby(42.35, -92.36) + '</p>');
+	document.write ('<hr>');
+
+
+	//this method  return string with states
+
+	MapCreator.prototype.statesNames = function() {
+ 		var namesArr = [];
+  		var temporaryStr;
+  		for (var i = 0; i <= this.places.length - 1; i++) {
+    		temporaryStr = this.places[i].name;
+		    let parsedName = temporaryStr.split(',');
+		    let stateCode = parsedName[1].trim();
+			    if(!namesArr.includes(stateCode)) {
+			      namesArr.push(stateCode);
+			    }
+	    };
+	      return namesArr.join(" ");
+	};
+
+	// displaying the result on a page
+
+	document.write ('<p> States - ' + Map.statesNames() + '</p>');
+
+
+</script>
+</body>
+</html>	
